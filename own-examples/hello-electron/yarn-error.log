@@ -1,0 +1,51 @@
+Arguments: 
+  /usr/bin/node /usr/bin/yarn electron-builder -mlw
+
+PATH: 
+  /usr/local/bin:/home/chris/anaconda3/condabin:/home/chris/anaconda3/condabin:/home/chris/anaconda3/bin:/home/chris/anaconda3/condabin:/home/chris/.sdkman/candidates/java/current:/home/chris/anaconda3/condabin:/usr/local/sbin:/usr/bin:/usr/bin/site_perl:/usr/bin/vendor_perl:/usr/bin/core_perl
+
+Yarn version: 
+  1.22.10
+
+Node version: 
+  15.3.0
+
+Platform: 
+  linux x64
+
+Trace: 
+  SyntaxError: /home/chris/Documents/git/Udemy-Electron/hello-electron/package.json: Unexpected token } in JSON at position 323
+      at JSON.parse (<anonymous>)
+      at /usr/lib/node_modules/yarn/lib/cli.js:1625:59
+      at Generator.next (<anonymous>)
+      at step (/usr/lib/node_modules/yarn/lib/cli.js:310:30)
+      at /usr/lib/node_modules/yarn/lib/cli.js:321:13
+
+npm manifest: 
+  {
+    "name": "hello-electron",
+    "version": "1.0.0",
+    "description": "Simple project for demonstrating Electron",
+    "main": "index.js",
+    "scripts": {
+      "electron": "electron ."
+    },
+    "author": "Christoph Knoll",
+    "license": "MIT",
+    "devDependencies": {
+      "electron": "^11.0.4",
+      "electron-builder": "^22.9.1",
+    },
+    "dependencies": {
+      "yarn": "^1.22.10"
+    },
+    "build": {
+      "appId": "com.christoph-knoll.hello-electron"
+    }
+  }
+
+yarn manifest: 
+  No manifest
+
+Lockfile: 
+  No lockfile

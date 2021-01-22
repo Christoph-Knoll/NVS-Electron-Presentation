@@ -1,0 +1,397 @@
+
+= Electron
+Christoph Knoll
+1.0, 2020-08-22
+ifndef::sourcedir[:sourcedir: ../src/main/java]
+ifndef::imagesdir[:imagesdir: images]
+ifndef::backend[:backend: html5]
+:icons: font
+[background-color="#70F8BA"]
+
+
+[background-color="#33D1FF"]
+== General
+//image::pexels-pixabay-261763.jpg[background, size=cover]
+
+=== History
+* Created by GitHub
+* Previously named Atom Shell
+* Made to create Atom
+* Use web technologies to create desktop apps
+
+[.notes]
+--
+Github wants to be involved in the creation process of apps.
+
+Many people use web technologies to create apps
+Framework to create native
+--
+
+
+=== Apps made with electron
+
+* Atom
+* Visual Studio Code
+* Discord [blue]#(Client)#
+* Slack [blue]#(Client)#
+* Microsoft Teams [blue]#(Client)#
+
+=== What is Electron
+    Electorn is a framework used to build cross-platform dektop apps
+    using web technologies
+
+* Electron is based upon Chromium
+* Utilizes Web Technologies (Js, HTML, CSS)
+    * Frontend frameworks: Angular, React, Vue.js
+
+=== Progressive Web Apps
+image::capabilities-reach.svg[500,500]
+
+[.notes]
+--
+Why are there so many web apps?
+Capapilities vs Reichweite
+WebApps -> Everyone has a Browser -> Reach -> Expansion
+NativeApps -> Did not Disappear? -> OS functionality still needed
+
+HTML code download
+PWA can be used offline
+App launched in browser window
+
+--
+=== Why does Electron exist then?
+* Ability to access OS functions (crypto, fs, etc. ).
+* Example
+** Web Apps: Can only use files the user feeds them.
+** Electron: Can read/write any arbitrary file of the machine at any time.
+
+[.notes]
+--
+Security -> Way more vulnarabilites found in PWAs
+
+
+**Demonstrate PWAs IO-issue**
+http://stackedit.io/
+https://app.diagrams.net/ -> standard file dialogue
+
+**PWAs are getting more powerful (also have access to fs, bluetoot, setial etc.)**
+**Restrictions still set by the browser**
+
+**Open vscode**
+--
+
+[%notitle,background-iframe="https://madnight.github.io/githut/#/pushes/2020/3"]
+=== Git Hut
+
+[background-color="#FFF275"]
+== How does Electron Work?
+//image::gears.jpg[background, size=cover]
+
+=== Chromium
+
+[plantuml,format="svg", id="chromium"]
+----
+@startmindmap
+scale 3
+* Chrome <&terminal>
+** BrowserWindow <&browser>
+** BrowserWindow <&browser>
+** BrowserWindow <&browser>
+@endmindmap
+----
+
+[.notes]
+--
+**Demonstrate processes in System monitor**
+--
+
+=== Electron
+
+[plantuml,format="svg", id="electron"]
+----
+@startmindmap
+scale 3
+* ElectronApp <&terminal>
+** BrowserWindow <&browser>
+** BrowserWindow <&browser>
+** BrowserWindow <&browser>
+@endmindmap
+----
+
+=== Communication with the OS
+[plantuml, format="svg", id="architecture"]
+----
+@startuml
+scale 3
+
+
+rectangle "**OS Layer**" as osl
+package electron {
+rectangle "**Main Process**\nElectronApp" as mp
+rectangle "**Render Process**\nBrowserWindow" as b1
+rectangle "**Render Process**\nBrowserWindow" as b2
+rectangle "**Render Process**\nBrowserWindow" as b3
+}
+
+
+
+mp --> osl
+b1 --> mp
+b2 --> mp
+b3 --> mp
+mp <-- osl
+b1 <-- mp
+b2 <-- mp
+b3 <-- mp
+@enduml
+----
+
+[.notes]
+--
+Processes communicate via IPC
+--
+
+//image::create.jpg[background, size=cover]
+
+[background-color="#DA3E52"]
+== How to create an electron app
+
+=== Convention
+[plantuml, format="svg", id="convention"]
+----
+@startuml
+scale 5
+
+rectangle "\n\n**Electron App**\n\n" as ea
+note left
+    Electron specific
+    configuration and logic
+end note
+
+
+rectangle "\n\n**Web App**\n (The Code in \n BrowserWindows)" as wa
+note right
+    Keep as generic
+    (independent from electron)
+    as possible
+    for reuse in web.
+end note
+
+ea -[hidden] wa
+
+@enduml
+----
+
+=== Basic structure
+. **package.json** -> Dependencies
+. **index.html** -> Webpage
+  * Usually imports regular java scripts and css
+. **index.js/main.js** -> Electron App
+. _**preload.js** -> To preload node modules_
+
+[.notes]
+--
+* package.json -> Dependencies/StartupScripts/Options managed by npm
+* index.html ->
+** Can also import js scripts
+** Reusable logic for WebApp
+* index.js -> Electron App
+** Electron specific logic
+** Logic that accesses OS
+--
+
+=== Cli
+[source, shell script]
+----
+mkdir my-electron-app && cd my-electron-app <1>
+npm init -y <2>
+npm i --save-dev electron <3>
+// Define "start"-script in package.json to issue command 'electron .'
+npm run start <4>
+----
+<1> Create directory
+<2> Create package.json file
+<3> Install electron
+<4> Run electron app
+
+=== Quickstart
+[source, shell script]
+----
+git clone https://github.com/electron/electron-quick-start <1>
+npm install <2>
+npm start <3>
+----
+<1> Clone electron-quick-start repository
+<2> Install dependencies
+<3> Start electron app
+
+[background-color="#96E6B3"]
+== How to Build
+//image::build.jpg[background, size=cover]
+
+=== Electron Builder
+
+==== Tool to build electron application
+
+[red]#Installation#
+[source, shell script]
+----
+npm install yarn -g
+yarn add electron-builder --dev
+----
+
+[red]#Specify build configuration in package.json#
+[source, json5]
+----
+"build": {
+  "appId": "com.example.app"
+}
+----
+
+=== Electron Builder
+[red]#Build for Linux#
+[source, shell script]
+----
+yarn electron-builder -l
+----
+
+AppImage created in ./dist directory
+
+* When using electron-builder it is recommended to start of with the https://github.com/electron-userland/electron-webpack-quick-start[electron-webpack-quick-start]-project
+
+[.notes]
+--
+* Webpack = module bundler
+* Bundle js files -> Single js File
+* Flavours(TypeScript)/ES6 -> Java Script
+--
+
+=== Electron Forge
+==== Tool to build Electron applications and generate boilerplate code
+[source, shell script]
+----
+yarn create electron-app my-app
+yarn start
+yarn make
+----
+* Dependencies needed build: dpkg, rpm tools
+* Output: App as .zip, .deb, .rpm
+
+[.notes]
+--
+dpkg -> Needed to build Debian Packages
+rpm tools -> Needed to build Fedora Packages
+--
+FFF275
+== Inter Process Communication (IPC)
+
+=== IPC
+* Main Process
+
+[source, javascript]
+----
+ipcMain.on('event_name', (event, data) => { <some code> })
+<window>.webContents.send('event_name', data)
+----
+
+* Renderer Process
+
+[source, javascript]
+----
+ipcRenderer.on('event_name', (event, data) => { <some code> })
+ipcRenderer.send('event_name', data)
+----
+
+=== IPC
+
+[plantuml, format="svg", id="ipcmethods"]
+----
+@startuml
+scale 2
+
+rectangle "\n\n**Electron App**\n*Main Process\n" as ea {
+    rectangle ipcMain.on as ipcMain.on
+    rectangle "<window>.webContents.send" as webContents.send
+
+    webContents.send --[hidden]> ipcMain.on
+}
+
+
+
+rectangle "\n\n**BrowserWindow**\n*Renderer Process\n" as mw {
+    rectangle ipcRenderer.send as ipcRenderer.send
+    rectangle ipcRenderer.on as ipcRenderer.on
+
+    ipcRenderer.on --[hidden]> ipcRenderer.send
+}
+
+webContents.send -> ipcRenderer.on
+ipcRenderer.send -> ipcMain.on
+
+@enduml
+----
+
+[.note]
+--
+Usage not recommended as shown in diagram, but explains how IPC works in electron.
+--
+
+[background-color="#1446A0"]
+== Security
+//::security.jpg[background, size=cover]
+
+=== Cross Site Scripting
+* Importing node modules into BrowserWindows enables cross side scripting
+[script, java script]
+----
+    mainWindow = new BrowserWindow({
+        // Needed to use node in a BrowserWindow
+        webPreferences: {
+            // Bad! Enables cross site scripting
+            nodeIntegration: true
+        }
+    });
+----
+
+[.note]
+--
+Never use nodeIntegration: true when handeling with untrustworthy sources (user input etc.)
+--
+
+=== Preloading
+* Purpose: Avoid importing node modules in a BrowserWindow
+* A preload script has access to electron and all other node packages instead
+* Expose only whitelisted wrappers around any node module
+* Context Bridges are those wrappers
+
+[.note]
+--
+Preloading -> Load scripts before BrowserWindow is loaded
+Usually done to increase speed/performance when loading assets like fonts, css and scipts
+--
+
+=== Context Bridge
+* Bidirectional bridge between BrowserWindow and ElectronApp
+* Imported using Preload
+* Allows to expose an api (e.g. electron package) to a renderer (BrowserWindow) securely.
+* Isolates and exposes only needed features (e.g. electron.ipcRenderer)
+
+
+[background-color="#FDE74C"]
+
+== Resources
+* https://www.electronjs.org/apps[Apps Made with Electron]
+* https://github.com/electron/electron-quick-start[Electron Quick Start]
+* https://www.electron.build/[Electron Builder]
+* https://www.electronforge.io/[Electron Forge]
+* https://www.electronjs.org/docs/api/context-bridge[Electron ContextBridge]
+* https://www.electronjs.org/blog/simple-samples[Simple Electron Examples]
+* https://coursetro.com/posts/code/119/Working-with-Electron-Menus---Tutorial[Electron Working With Menus]
+* https://www.christianengvall.se/electron-show-messagebox/[Electron Message Box]
+
+[background-color="#FDE74C"]
+== Other Sources
+* https://madnight.github.io/githut/[Git Hut 2.0]
+* https://web.dev/what-are-pwas/[What are PWAs]
+* https://www.udemy.com/course/electron-react-tutorial[Electron Udemy Course]
+* Images: https://www.pexels.com[Pexels]

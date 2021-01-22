@@ -1,0 +1,21 @@
+{
+  "name": "hello-electron",
+  "version": "1.0.0",
+  "description": "Simple project for demonstrating Electron",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "author": "Christoph Knoll",
+  "license": "MIT",
+  "devDependencies": {
+    "electron": "^11.0.4",
+    "electron-builder": "^22.9.1"
+  },
+  "dependencies": {
+    "yarn": "^1.22.10"
+  },
+  "build": {
+    "appId": "com.christoph-knoll.hello-electron"
+  }
+}
